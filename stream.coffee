@@ -1,7 +1,8 @@
-plus = (a,b) -> a+b
-eq = (a,b) -> a==b
+plus = (a, b) -> a + b
+max = (a, b) -> if a > b then a else b
+eq = (a, b) -> a == b
 mirror = (x) -> x
-nonce=[]
+nonce = []
 class Stream
     constructor: (@_head=nonce, @_tail) ->
         if not @empty() and not @_tail?
@@ -81,17 +82,12 @@ class Stream
         scaleone = (n) -> factor*n
         @map(scaleone)
     zip: (zipper, otherstream) ->
-        mismatch = -> throw error: "length mismatch"
-        if @empty()
-            if otherstream.empty()
-                new Stream()
-            else
-                mismatch()
-        else if otherstream.empty()
-            mismatch()
-        else
-            new Stream zipper(@head(), otherstream.head()), =>
-                @tail().zip(zipper, otherstream.tail())
+        return new Stream() if @empty() or otherstream.empty()
+        new Stream zipper(@head(), otherstream.head()), =>
+            @tail().zip(zipper, otherstream.tail())
+    crossJoin: (f, s) ->
+        return new Stream() if @empty() or s.empty()
+        Stream.repeat(@head()).zip(f, s).append @tail().crossJoin(f, s)
     append: (s) ->
         if @empty()
             s
@@ -106,6 +102,7 @@ class Stream
         @walk (element) -> initial = reducer initial, element
         initial
     sum: -> @reduce(plus, 0)
+    max: -> @reduce(max, @head())
     length: ->
         l = 0
         @walk -> l++
