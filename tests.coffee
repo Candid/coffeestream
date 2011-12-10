@@ -156,6 +156,9 @@ fib = Stream.recursive ((a,b) -> a+b), 1, 1
 
 eqList fib.take(10), [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
 
+one_to_three = Stream.range 1, 3
+
+eqList one_to_three.crossJoin(((a, b) -> a + b), one_to_five), [1+1, 1+2, 1+3, 1+4, 1+5, 2+1, 2+2, 2+3, 2+4, 2+5, 3+1, 3+2, 3+3, 3+4, 3+5]
 
 assert Stream.make(false, false, true).any()
 assert not Stream.make(false, false, false).any()

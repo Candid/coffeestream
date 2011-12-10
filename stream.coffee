@@ -122,13 +122,9 @@ class Stream
             else
                 @tail().up_until f
     equal: (s) ->
-        try
-            bstream = @zip eq, s
-            bstream.all()
-        catch err
-            if err.error != "length mismatch"
-                throw err
-            false
+        return true if @empty() and s.empty()
+        return false if @empty() or s.empty()
+        return @head() == s.head() and @tail().equal s.tail()
     member: (x) -> @any (m) -> m==x
 
 output = exports or window
